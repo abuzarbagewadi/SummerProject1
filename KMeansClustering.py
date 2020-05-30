@@ -1,0 +1,54 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun May 31 00:12:59 2020
+
+@author: Admin
+"""
+
+# K-Means Clustering
+
+# Importing the libraries
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Importing the dataset
+dataset = pd.read_csv('latestedu.csv')
+X = dataset.iloc[:, [23, 30]].values
+
+# Taking care of missing data
+from sklearn.impute import SimpleImputer
+imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+imputer.fit(X[:, 1:32])
+X[:, 1:32] = imputer.transform(X[:, 1:32])
+
+
+
+# Using the elbow method to find the optimal number of clusters
+from sklearn.cluster import KMeans
+wcss = []
+for i in range(1, 11):
+    kmeans = KMeans(n_clusters = i, init = 'k-means++', random_state = 0)
+    kmeans.fit(X)
+    wcss.append(kmeans.inertia_)
+plt.plot(range(1, 11), wcss)
+plt.title('The Elbow Method')
+plt.xlabel('Number of clusters')
+plt.ylabel('WCSS')
+plt.show()
+
+# Training the K-Means model on the dataset
+kmeans = KMeans(n_clusters = 4, init = 'k-means++', random_state = 0)
+y_kmeans = kmeans.fit_predict(X)
+
+# Visualising the clusters
+plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s = 100, c = 'red', label = 'Significant Increase in Budget')
+plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s = 100, c = 'blue', label = 'Considerable Increase in Budget')
+plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], s = 100, c = 'green', label = 'Moderate increase n Budget')
+plt.scatter(X[y_kmeans == 3, 0], X[y_kmeans == 3, 1], s = 100, c = 'cyan', label = 'Low increase in Budget')
+plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s = 300, c = 'yellow', label = 'Centroids')
+plt.title('Population of Education')
+plt.xlabel('Literacy Rate')
+plt.ylabel('Persons per Institution')
+plt.legend()
+plt.show()
