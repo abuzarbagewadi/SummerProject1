@@ -12,26 +12,20 @@ Created on Sun May 31 00:12:59 2020
 @author: Admin
 """
 
-# K-Means Clustering
 
-# Importing the libraries
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-# Importing the dataset
 dataset = pd.read_csv('UpdatedDataset1.csv')
 X = dataset.iloc[:, [30, 32]].values
 
-# Taking care of missing data
 from sklearn.impute import SimpleImputer
 imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
 imputer.fit(X[:, 0:33])
 X[:, 0:33] = imputer.transform(X[:, 0:33])
 
-
-
-# Using the elbow method to find the optimal number of clusters
 from sklearn.cluster import KMeans
 wcss = []
 for i in range(1, 11):
@@ -44,11 +38,9 @@ plt.xlabel('Number of clusters')
 plt.ylabel('WCSS')
 plt.show()
 
-# Training the K-Means model on the dataset
 kmeans = KMeans(n_clusters = 3, init = 'k-means++', random_state = 0)
 y_kmeans = kmeans.fit_predict(X)
 
-# Visualising the clusters
 plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s = 100, c = 'red', label = 'Cluster 1')
 plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s = 100, c = 'blue', label = 'Cluster 2')
 plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], s = 100, c = 'green', label = 'Cluster 3')
